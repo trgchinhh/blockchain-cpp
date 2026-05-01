@@ -2,7 +2,7 @@
 // |  _ \| |          | |      | |         (_)      
 // | |_) | | ___   ___| | _____| |__   __ _ _ _ __  
 // |  _ <| |/ _ \ / __| |/ / __| '_ \ / _` | | '_ \    Demo blockchain C++
-// | |_) | | (_) | (__|   < (__| | | | (_| | | | | |   https://github.com/trgchinhh/demo-blockchain
+// | |_) | | (_) | (__|   < (__| | | | (_| | | | | |   https://github.com/trgchinhh/blockchain-cpp
 // |____/|_|\___/ \___|_|\_\___|_| |_|\__,_|_|_| |_|   Tác giả: Nguyễn Trường Chinh
 // 
 // Bản quyền: MIT LICENSE 2026
