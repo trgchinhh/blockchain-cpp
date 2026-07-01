@@ -32,3 +32,9 @@ pacman -S mingw-w64-ucrt-x86_64-cryptopp
 # Đối với môi trường MINGW64 
 pacman -S mingw-w64-x86_64-cryptopp
 ```
+
+### Cài đặt và biên dịch
+```bash
+g++ main.cpp -o main.exe -lhashlib -lcryptopp -lssl -lcrypto
+./main.exe
+```
