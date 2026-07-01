@@ -101,10 +101,11 @@ Tóm tắt:
 
 // thư viện tóm tắt dùng hash trong openssl gọn như python
 // xem hướng dẫn và tải tại: https://github.com/trgchinhh/hashlib-cpp
-#include <hashlib.h> 
+//#include <hashlib.h> 
 
 // Thư viện phụ dùng cho json 
 #include "lib/json.hpp"
+#include "lib/hashlib.h"
 
 // Thư viện Crypto++ cho RSA
 // Cài từ Ming64
