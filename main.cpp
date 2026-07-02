@@ -107,6 +107,9 @@ Tóm tắt:
 // Thư viện phụ dùng cho json 
 #include "lib/json.hpp"
 
+// Thư viện phụ dùng chrono sinh ngày tháng năm 
+#include "lib/datetime.h"
+
 // Thư viện Crypto++ cho RSA
 // Cài từ Ming64
 // Lệnh cài: pacman -S mingw-w64-x86_64-cryptopp
@@ -122,6 +125,7 @@ Tóm tắt:
 #include <indicators/cursor_control.hpp>
 
 using namespace std;
+using namespace dt;
 using namespace hashlib;
 using namespace chrono;
 using namespace CryptoPP;
@@ -136,12 +140,7 @@ const vector<string> names = {
 };
 
 string time_now(){
-    auto now = system_clock::now();
-    time_t time = system_clock::to_time_t(now);
-    tm* local_tm = localtime(&time);
-    ostringstream oss;
-    oss << put_time(local_tm, "%H:%M:%S - %d/%m/%Y");
-    return oss.str();
+    return datetime::now().strftime("%H:%M:%S - %d/%m/%Y");
 }
 
 class UserBlockchain {
