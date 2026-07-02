@@ -97,15 +97,15 @@ Tóm tắt:
 #include <iomanip>
 #include <random>
 #include <fstream>
-#include <windows.h>
+#include <thread>
+#include <atomic>
 
 // thư viện tóm tắt dùng hash trong openssl gọn như python
 // xem hướng dẫn và tải tại: https://github.com/trgchinhh/hashlib-cpp
-//#include <hashlib.h> 
+#include "lib/hashlib.h"
 
 // Thư viện phụ dùng cho json 
 #include "lib/json.hpp"
-#include "lib/hashlib.h"
 
 // Thư viện Crypto++ cho RSA
 // Cài từ Ming64
@@ -116,10 +116,17 @@ Tóm tắt:
 #include <cryptopp/hex.h>
 #include <cryptopp/pssr.h>
 
+// Thư viện indicator cho progress bar
+// Tải thư viện tại: https://github.com/p-ranav/indicators
+#include <indicators/progress_bar.hpp>
+#include <indicators/cursor_control.hpp>
+
 using namespace std;
 using namespace hashlib;
 using namespace chrono;
 using namespace CryptoPP;
+using namespace indicators;
+using namespace indicators::option;
 using json = nlohmann::ordered_json;
 
 const vector<string> names = {
@@ -362,14 +369,25 @@ public:
 };
 
 void countdown(int seconds){
-    for(int i = seconds; i >= 0; i--){
-        cout << "\rBắt đầu sau: " << i << " giây";
-        Sleep(1000);
+    ProgressBar bar{
+        BarWidth{40},
+        Start{"["},
+        Fill{"#"},
+        Lead{"#"},
+        Remainder{"-"},
+        End{"]"},
+        ShowPercentage{true},
+        PrefixText{"Đang chuẩn bị giao dịch: "},
+    };
+    const int total = seconds * 25;
+    for(int i = 0; i <= total; i++){
+        bar.set_progress(i*100/total);
+        this_thread::sleep_for(milliseconds(40));
     }
-    cout << "\n\n\n";
 }
 
 int main(){
+    show_console_cursor(false);
     cout << "Đang khởi tạo địa chỉ ví cho toàn user tham gia..." << endl;
     UserBlockchain userblockchain;
     userblockchain.save_all_user_keys();
@@ -379,10 +397,12 @@ int main(){
     Blockchain blockchain(difficulty);
     TransactionManager tx_manager;
 
-    cout << "Bắt đầu đào " << number_blocks << " block với độ khó " << difficulty << endl;
     countdown(3);
-    Sleep(2000);
+    cout << "Bắt đầu đào " << number_blocks << " block với độ khó " << difficulty << "\n\n";
+    this_thread::sleep_for(seconds(2));
+
     for(int i = 0; i < number_blocks; i++) {
+        atomic<bool> done = false;
         json ts = tx_manager.create_transaction();
         if(tx_manager.verify_transaction(ts)) {
             cout << "Đã xác thực giao dịch " << (i + 1) << endl;
@@ -395,5 +415,6 @@ int main(){
     cout << "Hoàn tất đào " << number_blocks 
          << " block với " << blockchain.total_time << " giây" << endl;
 
+    show_console_cursor(false);
     return 0;
 }
