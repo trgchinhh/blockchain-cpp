@@ -1,6 +1,6 @@
-## Demo blockchain C++ (Nâng cấp RSA)
-
 ![Blockchain-logo](img/logo1.png)
+
+## Demo blockchain C++ (Nâng cấp RSA)
 
 Dự án này là một ứng dụng giả lập (mô phỏng) mạng lưới Blockchain phân tán viết bằng ngôn ngữ C++. Phiên bản nâng cấp này tích hợp cơ chế bảo mật ví điện tử bất đối xứng bằng thuật toán RSA (thông qua thư viện Crypto++) và cơ chế đồng thuận Proof of Work (PoW) dựa trên hàm băm mật mã học SHA-256
 
@@ -54,3 +54,11 @@ pacman -S mingw-w64-x86_64-cryptopp
 g++ main.cpp -o main.exe -lcryptopp -lssl -lcrypto
 ./main.exe
 ```
+
+## Tác giả
+**Nguyễn Trường Chinh (NTC++)**
+GitHub: [https://github.com/trgchinhh](https://github.com/trgchinhh)
+
+---
+
+> 📌 Dự án nhỏ được phát triển với mục đích học tập và nghiên cứu. Mọi góp ý và đóng góp đều được hoan nghênh.
