@@ -367,7 +367,7 @@ public:
     }
 };
 
-void countdown(int seconds){
+void loading_bar(int seconds){
     ProgressBar bar{
         BarWidth{40},
         Start{"["},
@@ -396,12 +396,11 @@ int main(){
     Blockchain blockchain(difficulty);
     TransactionManager tx_manager;
 
-    countdown(3);
+    loading_bar(3);
     cout << "Bắt đầu đào " << number_blocks << " block với độ khó " << difficulty << "\n\n";
     this_thread::sleep_for(seconds(2));
 
     for(int i = 0; i < number_blocks; i++) {
-        atomic<bool> done = false;
         json ts = tx_manager.create_transaction();
         if(tx_manager.verify_transaction(ts)) {
             cout << "Đã xác thực giao dịch " << (i + 1) << endl;
