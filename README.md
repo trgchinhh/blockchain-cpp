@@ -1,6 +1,6 @@
 ## Demo blockchain C++ (Nâng cấp RSA)
 
-![Blockchain-logo](img/logo.png)
+![Blockchain-logo](img/logo1.png)
 
 Dự án này là một ứng dụng giả lập (mô phỏng) mạng lưới Blockchain phân tán viết bằng ngôn ngữ C++. Phiên bản nâng cấp này tích hợp cơ chế bảo mật ví điện tử bất đối xứng bằng thuật toán RSA (thông qua thư viện Crypto++) và cơ chế đồng thuận Proof of Work (PoW) dựa trên hàm băm mật mã học SHA-256
 
