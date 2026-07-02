@@ -1,4 +1,4 @@
-![Blockchain-logo](img/logo1.png)
+![Blockchain-logo](img/logo2.png)
 
 ## Demo blockchain C++ (Nâng cấp RSA)
 
