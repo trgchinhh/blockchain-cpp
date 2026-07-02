@@ -1,8 +1,24 @@
 ## Demo blockchain C++ (Nâng cấp RSA)
 
-Demo mô phỏng validator tham gia vào mạng lưới blockchain thực hiện xác thực chữ ký số giao dịch, tính toán mã hash hợp lệ (đào) cho block bằng thuật toán Proof of Work (PoW) và thêm block vào chuỗi.
+Dự án này là một ứng dụng giả lập (mô phỏng) mạng lưới Blockchain phân tán viết bằng ngôn ngữ C++. Phiên bản nâng cấp này tích hợp cơ chế bảo mật ví điện tử bất đối xứng bằng thuật toán RSA (thông qua thư viện Crypto++) và cơ chế đồng thuận Proof of Work (PoW) dựa trên hàm băm mật mã học SHA-256
 
 ![Blockchain demo](docs/blockchain-demo.gif)
+
+## Tổng quan kiến trúc & Quy trình vận hành
+Hệ thống hoạt động như một chu trình khép kín bao gồm 4 giai đoạn chính từ lúc khởi tạo người dùng cho đến khi khối được đóng vào chuỗi:
+
+```bash
+  [Khởi tạo Ví] ──> [Tạo & Ký Giao dịch] ──> [Xác thực Chữ ký] ──> [Đào Khối PoW] ──> [Thêm vào Chuỗi]
+   (RSA Keys)         (Private Key)            (Public Key)         (Tìm Nonce)       (Liên kết Hash)
+```
+
+1. Khởi tạo định danh (Wallet Generation): Hệ thống tự động quét danh sách người dùng đầu vào, sinh ngẫu nhiên cặp khóa RSA (Khóa bí mật - Private Key và Khóa công khai - Public Key). Cặp khóa này được mã hóa dưới dạng Base64 và lưu trữ cục bộ vào 2 tệp tin cấu trúc JSON (private_keys.json và public_keys.json).
+
+2. Khởi tạo và Ký giao dịch (Sign Transaction): Khi một giao dịch chuyển tiền ngẫu nhiên diễn ra, toàn bộ dữ liệu giao dịch (Người gửi, Người nhận, Số tiền, Chi phí, Mã giao dịch MD5, Thời gian) sẽ được gom lại thành một chuỗi văn bản gốc. Người gửi sử dụng Private Key của mình để thực hiện ký số, tạo ra mã chữ ký (Signature) dạng chuỗi Hex đính kèm vào gói giao dịch.
+
+3. Xác thực giao dịch (Verify Transaction): Trước khi đưa dữ liệu vào khối để đào, Validator sẽ trích xuất thông tin giao dịch, lấy Public Key công khai của người gửi từ cơ sở dữ liệu để giải mã và xác thực chữ ký. Nếu dữ liệu bị chỉnh sửa dù chỉ 1 ký tự, chữ ký sẽ không hợp lệ và giao dịch bị hủy bỏ.
+
+4. Đồng thuận đào block (Proof of Work): Giao dịch hợp lệ được đóng gói vào một Khối (Block). Miner/Validator tiến hành brute-force (thử sai) liên tục giá trị số nguyên Nonce bắt đầu từ 0 để băm toàn bộ khối bằng SHA-256. Quá trình dừng lại khi tìm được chuỗi Hash có số lượng ký tự 0 ở đầu bằng với độ khó Difficulty quy định. Khối mới tìm được liên kết với khối trước đó thông qua thông số Previous Hash
 
 ## Các tính năng nâng cấp nổi bật
 
@@ -19,8 +35,6 @@ Demo mô phỏng validator tham gia vào mạng lưới blockchain thực hiện
 
 1.  **Crypto++ (cryptopp):** Thư viện mã hóa chuyên sâu phục vụ thuật toán ký RSA
 2.  **OpenSSL (libssl & libcrypto):** Phục vụ cho các hàm băm cơ bản
-3.  **Hashlib-cpp:** Thư viện tóm tắt tự viết giúp gọi hash tiện lợi như Python. Tải và xem hướng dẫn tại: [github.com/trgchinhh/hashlib-cpp](https://github.com/trgchinhh/hashlib-cpp)
-4.  **JSON:** Thư viện phụ xử lý cấu trúc JSON (`lib/json.hpp`)
 
 ### Hướng dẫn cài nhanh Crypto++ trên Windows (MinGW64 / MSYS2)
 
@@ -33,8 +47,8 @@ pacman -S mingw-w64-ucrt-x86_64-cryptopp
 pacman -S mingw-w64-x86_64-cryptopp
 ```
 
-### Cài đặt và biên dịch
+### Biên dịch và khởi chạy 
 ```bash
-g++ main.cpp -o main.exe -lhashlib -lcryptopp -lssl -lcrypto
+g++ main.cpp -o main.exe -lcryptopp -lssl -lcrypto
 ./main.exe
 ```
