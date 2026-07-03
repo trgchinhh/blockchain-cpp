@@ -277,94 +277,121 @@ class TransactionManager {
 };
 
 class Block {
-private:
-    int block_id;
-    json block_data;
-    string block_prev_hash;
-    string block_curr_hash;
-    string block_time;
-    int block_nonce;
-    int mining_time;
+    private:
+        int block_id;
+        json block_data;
+        string block_prev_hash;
+        string block_curr_hash;
+        string block_time;
+        int block_nonce;
+        int mining_time;
+        bool isvalid;
 
-public:
-    Block(json data) {
-        this->block_data = data;
-        this->block_id = 0;
-        this->block_nonce = 0;
-    }
+    public:
+        Block(json data) {
+            this->block_data = data;
+            this->block_id = 0;
+            this->block_nonce = 0;
+            this->isvalid = false;
+        }
 
-    string hash_sha256(){
-        string hash_data = to_string(this->block_id) 
-                         + this->block_data.dump() 
-                         + this->block_prev_hash
-                         + this->block_time
-                         + to_string(this->block_nonce);
-        return sha256(hash_data).hexdigest();                    
-    }
-    friend class Blockchain;
+        string hash_sha256(){
+            string hash_data = to_string(this->block_id) 
+                             + this->block_data.dump() 
+                             + this->block_prev_hash
+                             + this->block_time
+                             + to_string(this->block_nonce);
+            return sha256(hash_data).hexdigest();                    
+        }
+        friend class Blockchain;
 };
 
 class Blockchain {
-private:
-    int difficulty;
-    vector<Block> chain;
-    string str_difficulty;
+    private:
+        int difficulty;
+        vector<Block> chain;
+        string str_difficulty;
 
-public:
-    int total_time = 0;
-    Blockchain(int difficulty){
-        this->difficulty = difficulty;
-        this->str_difficulty = string(this->difficulty, '0');
-        this->genesis_block();
-    }
-
-    void genesis_block(){
-        json genesis_data;
-        genesis_data["msg"] = "This is a genesis block in chain coding by NTC++"; 
-        genesis_data["time"] = time_now();
-        Block genesis_block(genesis_data);
-        genesis_block.block_time = time_now();
-        genesis_block.block_prev_hash = string(64, '0');
-        genesis_block.block_curr_hash = genesis_block.hash_sha256();
-        this->chain.push_back(genesis_block);
-        this->print_block(genesis_block);
-    }
-
-    void add_block(json data){
-        Block block(data);
-        block.block_id = chain.size();
-        block.block_time = time_now();
-        block.block_prev_hash = this->chain.back().block_curr_hash;
-        block.block_curr_hash = block.hash_sha256();
-        auto start_time = high_resolution_clock::now();
-        while(block.block_curr_hash.substr(0, this->difficulty) != this->str_difficulty){
-            block.block_nonce++;
-            cout << "\rNonce: " << block.block_nonce;
-            block.block_curr_hash = block.hash_sha256();            
-        }    
-        auto end_time = high_resolution_clock::now();
-        block.mining_time = duration_cast<seconds>((end_time - start_time)).count();
-        this->total_time += block.mining_time;
-        cout << endl;
-        this->chain.push_back(block);
-        this->print_block(block);
-    }
-
-    void print_block(Block block){
-        json display_data = block.block_data;
-        if (display_data.contains("Signature")) {
-            string sig = display_data["Signature"];
-            display_data["Signature"] = sig.substr(0, 10) + "..." + sig.substr(sig.length() - 10);
+    public:
+        int total_time = 0;
+        Blockchain(int difficulty){
+            this->difficulty = difficulty;
+            this->str_difficulty = string(this->difficulty, '0');
+            this->genesis_block();
         }
 
-        cout << "Index: " << block.block_id << endl;
-        cout << "Data: " << display_data.dump(4) << endl;
-        cout << "Prev hash: " << block.block_prev_hash << endl;
-        cout << "Curr hash: " << block.block_curr_hash << endl;
-        cout << "Time: " << block.block_time << endl;
-        cout << "Mining time: " << block.mining_time << " s" << endl;
-        cout << "\n" << endl;
-    }
+        void genesis_block(){
+            json genesis_data;
+            genesis_data["msg"] = "This is a genesis block in chain coding by NTC++"; 
+            genesis_data["time"] = time_now();
+            Block genesis_block(genesis_data);
+            genesis_block.block_time = time_now();
+            genesis_block.block_prev_hash = string(64, '0');
+            genesis_block.block_curr_hash = genesis_block.hash_sha256();
+            genesis_block.isvalid = true;
+            this->chain.push_back(genesis_block);
+            this->print_block(genesis_block);
+        }
+
+        void add_block(json data){
+            Block block(data);
+            Block prev_block = this->chain.back();
+            block.block_id = chain.size();
+            block.block_time = time_now();
+            block.block_prev_hash = prev_block.block_curr_hash;
+            block.block_curr_hash = block.hash_sha256();
+            auto start_time = high_resolution_clock::now();
+            while(block.block_curr_hash.substr(0, this->difficulty) != this->str_difficulty){
+                block.block_nonce++;
+                cout << "\rNonce: " << block.block_nonce;
+                block.block_curr_hash = block.hash_sha256();            
+            }    
+            auto end_time = high_resolution_clock::now();
+            block.mining_time = duration_cast<seconds>((end_time - start_time)).count();
+            this->total_time += block.mining_time;
+            cout << endl;
+            block.isvalid = this->isvalid_block(block, prev_block);
+            this->chain.push_back(block);
+            this->print_block(block);
+        }
+
+        bool isvalid_block(Block block, Block prev_block){
+            if(block.block_prev_hash != prev_block.block_curr_hash){
+                return false;
+            }
+            if(block.block_curr_hash != block.hash_sha256()){
+                return false;
+            }
+            return true;
+        }
+
+        bool isvalid_chain(){
+            for(int i = 0; i < this->chain.size(); i++){
+                Block block = this->chain[i];
+                if(!block.isvalid){
+                    cout << "Block: " << i << " không thể xác thực" << endl;
+                    return false;
+                }
+            }
+            cout << "Toàn bộ block đã được xác thực" << endl;
+            return true;
+        }
+
+        void print_block(Block block){
+            json display_data = block.block_data;
+            if (display_data.contains("Signature")) {
+                string sig = display_data["Signature"];
+                display_data["Signature"] = sig.substr(0, 10) + "..." + sig.substr(sig.length() - 10);
+            }
+
+            cout << "Index: " << block.block_id << endl;
+            cout << "Data: " << display_data.dump(4) << endl;
+            cout << "Prev hash: " << block.block_prev_hash << endl;
+            cout << "Curr hash: " << block.block_curr_hash << endl;
+            cout << "Time: " << block.block_time << endl;
+            cout << "Mining time: " << block.mining_time << " s" << endl;
+            cout << "\n" << endl;
+        }
 };
 
 void loading_bar(int seconds){
@@ -410,6 +437,7 @@ int main(){
         }
     }
 
+    blockchain.isvalid_chain();
     cout << "Hoàn tất đào " << number_blocks 
          << " block với " << blockchain.total_time << " giây" << endl;
 
