@@ -1,4 +1,4 @@
-![Blockchain-logo](img/logo.png)
+![Blockchain-logo](https://github.com/trgchinhh/blockchain-cpp/blob/main/img/logo.png)
 <p align="center">
   <a href="https://github.com/trgchinhh/blockchain-cpp">
     <img src="https://img.shields.io/badge/Language-C%2B%2B-orange.svg" alt="Language"/>
