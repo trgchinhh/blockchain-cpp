@@ -1,91 +1,237 @@
-//  ____  _             _        _           _       
-// |  _ \| |          | |      | |         (_)      
-// | |_) | | ___   ___| | _____| |__   __ _ _ _ __  
-// |  _ <| |/ _ \ / __| |/ / __| '_ \ / _` | | '_ \    Demo blockchain C++ (Nâng cấp RSA)
-// | |_) | | (_) | (__|   < (__| | | | (_| | | | | |   Thư viện: Crypto++ 
-// |____/|_|\___/ \___|_|\_\___|_| |_|\__,_|_|_| |_|   Tác giả: Nguyễn Trường Chinh
-// 
-// Bản quyền: MIT LICENSE 2026
+# Blockchain Demo C++
 
-/* DOC
-────────────────────────────────────────────────────────────────────────────────────────────
-Hoàn thành ngày 01/07/2026                                  
-Demo đào block và thêm block vào blockchain kết hợp chữ ký số RSA
+> Demo Blockchain C++ sử dụng **Crypto++**, kết hợp **SHA-256**, **Proof of Work (PoW)** và **RSA Digital Signature**.
 
-Tìm hiểu hash sha256 là gì ?
-  - Hash là hàm băm dữ liệu với đầu vào con người có thể đọc hiểu 
-    nhưng đầu ra là 1 chuỗi được mã hóa dài 256(bit) ~ 64 ký tự   
-  - Mã băm không thể giải mã (hàm 1 chiều)
-  - Chỉ cần thay đổi nhỏ ở input -> output thay đổi hoàn toàn
-  - Hiệu ứng thác đổ (Avalanche Effect): Thay đổi dù chỉ 1 dấu chấm, 
-    toàn bộ chuỗi hash đầu ra sẽ biến đổi hoàn toàn không theo quy luật.
-  - Phân biệt trong code: MD5 dùng để băm Transaction Code (nhanh, ngắn gọn),
-    còn SHA256 dùng để băm toàn bộ Block bảo vệ chuỗi liên kết.
+- **Ngôn ngữ:** C++
+- **Thư viện:** Crypto++
+- **Hoàn thành:** 01/07/2026
+- **Tác giả:** Nguyễn Trường Chinh (NTC++)
+- **Giấy phép:** MIT License
 
-Cơ chế chữ ký số (RSA Signature)
-  - Mỗi User tham gia mạng lưới sở hữu một cặp khóa: Private và Public Key
-  - Người gửi ký giao dịch bằng Private Key -> Tạo ra Signature dạng chuỗi
-  - Toàn bộ mạng lưới sử dụng Public Key để kiểm tra (Verify) giao dịch đó
-  - Đảm bảo tính bảo mật, chống gian lận và mạo danh ví người khác
-  - Chống chối bỏ (Non-repudiation): Khi một giao dịch đã được ký bằng 
-    Private Key hợp lệ, người gửi không thể phủ nhận giao dịch đó do chính họ tạo ra.
-  - Mã hóa Hex: Chữ ký nhị phân thô (Raw bytes) sinh ra từ bộ ký sẽ được mã hóa
-    sang dạng chuỗi ký tự Hex nhằm truyền tải và lưu trữ an toàn trong tệp JSON.
+---
 
-Cách hoạt động
-  - Khi 1 block yêu cầu vào blockchain, hệ thống sẽ:
-    - Gom dữ liệu (transactions) đã được xác thực chữ ký thành công
-    - Lấy hash của block trước (previous hash) để liên kết chuỗi
-    - Thêm timestamp (thời gian khởi tạo khối)
-    - Thêm nonce (số thử bắt đầu từ 0)
+# Blockchain hoạt động như thế nào?
 
-  - Validator (hoặc miner) sẽ:
-    - Thử nhiều giá trị nonce khác nhau
-    - Mỗi lần thử sẽ tính lại hash của block
-    - Mục tiêu: tìm được hash thỏa điều kiện (ví dụ: bắt đầu bằng "0000")
-    -> Quá trình này gọi là Proof of Work (PoW)
+## Hash SHA-256 là gì?
+
+SHA-256 là thuật toán băm (Hash Function) biến dữ liệu đầu vào thành chuỗi băm dài **256 bit (64 ký tự Hex)**.
+
+### Đặc điểm
+
+- Hàm băm một chiều, **không thể giải mã ngược**.
+- Chỉ cần thay đổi một ký tự ở dữ liệu đầu vào thì kết quả băm sẽ thay đổi hoàn toàn.
+- Có **hiệu ứng thác đổ (Avalanche Effect)**.
+- Trong demo:
+  - **MD5** dùng để tạo **Transaction Code** (nhanh, ngắn gọn).
+  - **SHA-256** dùng để băm toàn bộ Block nhằm bảo vệ chuỗi Blockchain.
+
+---
+
+## Chữ ký số RSA (RSA Digital Signature)
+
+Mỗi người dùng tham gia mạng sẽ sở hữu:
+
+- Private Key
+- Public Key
+
+Quy trình hoạt động:
+
+1. Người gửi ký giao dịch bằng **Private Key**.
+2. Sinh ra một **Digital Signature**.
+3. Các node khác sử dụng **Public Key** để xác minh chữ ký.
+
+### Lợi ích
+
+- Xác thực người gửi.
+- Chống giả mạo giao dịch.
+- Chống chối bỏ (Non-repudiation).
+- Bảo vệ tính toàn vẹn của dữ liệu.
+
+### Lưu trữ
+
+Chữ ký RSA sinh ra ở dạng **Raw Bytes** nên sẽ được mã hóa sang **Hex** để dễ lưu trong JSON hoặc truyền qua mạng.
+
+---
+
+# Quy trình tạo Block
+
+Khi một Block được tạo, hệ thống sẽ chuẩn bị:
+
+- Danh sách Transaction đã xác thực
+- Previous Hash
+- Timestamp
+- Nonce
+
+Ví dụ dữ liệu được băm:
+
+```text
+SHA256(
+    block_id +
+    transactions +
+    previous_hash +
+    timestamp +
+    nonce
+)
+```
+
+---
+
+# Proof of Work (PoW)
+
+Validator (hoặc Miner) sẽ liên tục thử các giá trị Nonce:
+
+```text
+nonce = 0
+nonce = 1
+nonce = 2
+...
+```
+
+Mỗi lần thử:
+
+```text
+Hash = SHA256(Block Data)
+```
+
+Cho tới khi Hash thỏa điều kiện độ khó.
 
 Ví dụ:
-  hash = SHA256(block_id + data + previous_hash + time + nonce)
 
-  Validator sẽ lặp:
-    nonce = 0,1,2,3,... cho đến khi:
-    hash thỏa điều kiện độ khó (difficulty)
-    Ví dụ nếu difficulty = 4
-      -> khi hash ra a6957asd.... (hash chưa thỏa)
-      -> Khi hash ra 000089a5.... (hash thỏa) 
+```text
+Difficulty = 4
 
-Độ khó (difficulty):
-  - Quy định số lượng số 0 ở đầu hash
-  - Difficulty càng cao -> càng khó tìm -> càng tốn thời gian
-  - Tính bất đối xứng: Việc tìm ra Nonce hợp lệ cực kỳ khó và tốn tài nguyên phần cứng,
-    nhưng khi đã tìm ra, các node khác chỉ mất một phép toán để kiểm tra lại (Verify nhanh).
+Hash:
+a6957asd...
+❌ Không hợp lệ
 
-Khi tìm được hash hợp lệ:
-  - Block được "mine" thành công
-  - Được thêm vào blockchain
-  - Validator nhận reward (phần thưởng)
-  -> Quá trình này thường được gọi là đào coin
+000089a5...
+✅ Hợp lệ
+```
 
-Cấu trúc Genesis Block (Khối nguyên thủy)
-  - Là khối đầu tiên (Index = 0) đặt nền móng cho toàn bộ Blockchain.
-  - Không có khối đứng trước, vì vậy Previous Hash được gán mặc định chuỗi 64 ký tự '0'.
-  - Chứa thông điệp khởi thủy của nhà sáng lập mạng lưới.
+---
 
-Đặc điểm quan trọng:
-  - Không thể đoán trước hash
-  - Chỉ có thể brute-force (thử sai liên tục)
-  - Dễ verify (kiểm tra nhanh), khó tạo (tính lâu)
-  - Tính bất biến (Immutability): Nếu bất kỳ ai cố tình chỉnh sửa dù chỉ 1 byte dữ liệu ở một khối cũ,
-    mã hash khối đó thay đổi -> gãy liên kết với khối tiếp theo -> toàn bộ chuỗi phía sau trở nên vô hiệu.
+# Difficulty
 
-Ứng dụng:
-  - Blockchain (Bitcoin, Ethereum, Smart Contract)
-  - Bảo mật mật khẩu, chữ ký điện tử doanh nghiệp
-  - Kiểm tra toàn vẹn dữ liệu phần mềm, file tải về
+Difficulty quy định số lượng số **0** ở đầu Hash.
 
-Tóm tắt:
-  Mining = tìm nonce sao cho hash hợp lệ
-  -> đảm bảo tính bảo mật, toàn vẹn dữ liệu và phi tập trung của blockchain
-────────────────────────────────────────────────────────────────────────────────────────────
-*/
+Ví dụ:
+
+```text
+Difficulty = 3
+
+000abfd8...
+```
+
+Difficulty càng cao:
+
+- Càng nhiều phép tính.
+- Càng mất nhiều thời gian đào.
+- Càng tốn tài nguyên CPU.
+
+---
+
+# Sau khi Mine thành công
+
+Khi tìm được Nonce phù hợp:
+
+- Block được Mine thành công.
+- Block được thêm vào Blockchain.
+- Validator nhận Reward.
+
+Quá trình này thường được gọi là **đào coin (Mining)**.
+
+---
+
+# Genesis Block
+
+Genesis Block là Block đầu tiên của Blockchain.
+
+Đặc điểm:
+
+- Index = 0
+- Previous Hash = 64 ký tự '0'
+- Chứa thông điệp khởi tạo của Blockchain.
+
+Ví dụ:
+
+```text
+Previous Hash
+
+0000000000000000000000000000000000000000000000000000000000000000
+```
+
+---
+
+# Tính chất của Blockchain
+
+## Không thể đoán trước Hash
+
+Không có công thức để dự đoán Hash.
+
+Chỉ có thể:
+
+- Brute Force
+- Thử liên tục các giá trị Nonce
+
+---
+
+## Khó tạo nhưng dễ kiểm tra
+
+Đây là đặc điểm quan trọng của PoW.
+
+- Tạo Block hợp lệ rất tốn thời gian.
+- Kiểm tra Hash chỉ cần một phép tính SHA-256.
+
+---
+
+## Tính bất biến (Immutability)
+
+Nếu chỉ sửa **1 byte** trong một Block cũ:
+
+- Hash Block đó thay đổi.
+- Previous Hash của Block kế tiếp không còn đúng.
+- Toàn bộ Blockchain phía sau bị vô hiệu.
+
+---
+
+# Ứng dụng
+
+Blockchain được sử dụng trong:
+
+- Bitcoin
+- Ethereum
+- Smart Contract
+- Chữ ký điện tử
+- Bảo mật mật khẩu
+- Kiểm tra toàn vẹn phần mềm
+- Kiểm tra file tải về
+
+---
+
+# Tóm tắt
+
+```text
+ Transaction
+      │
+      ▼
+ RSA Signature
+      │
+      ▼
+    Verify
+      │
+      ▼
+ Create Block
+      │
+      ▼
+ Proof of Work
+      │
+      ▼
+ Mine Success
+      │
+      ▼
+Add Block to Blockchain
+```
+
+**Mining = Tìm Nonce để Hash thỏa điều kiện Difficulty**
+
+→ Đảm bảo tính **bảo mật**, **toàn vẹn dữ liệu** và **phi tập trung** của Blockchain.
