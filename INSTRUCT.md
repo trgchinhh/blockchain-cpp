@@ -102,10 +102,10 @@ Difficulty = 4
 
 Hash:
 a6957asd...
-❌ Không hợp lệ
+=> Không hợp lệ
 
 000089a5...
-✅ Hợp lệ
+=> Hợp lệ
 ```
 
 ---
