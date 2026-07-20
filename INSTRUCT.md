@@ -67,11 +67,33 @@ Ví dụ dữ liệu được băm:
 ```text
 SHA256(
     block_id +
-    transactions +
+    data(transactions) +
     previous_hash +
-    timestamp +
-    nonce
+    nonce +
+    block_time +
+    mining_time
 )
+```
+
+---
+
+# Cấu trúc liên kết chuỗi (Chain Structure)
+
+Dưới đây là cấu trúc hiển thị trực quan mối quan hệ chặt chẽ giữa các Block. Khối sau sẽ khóa chặt vào khối trước thông qua luồng mã băm (curr_hash trỏ vào prev_hash)
+
+```text
+┌───────────────────────┐                  ┌───────────────────────┐                  ┌───────────────────────┐
+│     [ BLOCK #1 ]      │                  │     [ BLOCK #2 ]      │                  │     [ BLOCK #3 ]      │
+├───────────────────────┤                  ├───────────────────────┤                  ├───────────────────────┤
+│ * Chỉ số block        │                  │ * Chỉ số block        │                  │ * Chỉ số block        │
+│ * Dữ liệu block       │   [curr_hash]    │ * Dữ liệu block       │   [curr_hash]    │ * Dữ liệu block       │
+│ * Hash trước đó       │   ────────────►  │ * Hash trước đó ◄─────┼── ────────────►  │ * Hash trước đó ◄─────┤
+│ * Hash hiện tại ──────┼── ◄────────────  │ * Hash hiện tại       │   ◄────────────  │ * Hash hiện tại       │
+│ * Số nonce            │   [prev_hash]    │ * Số nonce            │   [prev_hash]    │ * Số nonce            │
+│ * Thời gian tạo block │                  │ * Thời gian tạo block │                  │ * Thời gian tạo block │
+│ * Thời gian đào block │                  │ * Thời gian đào block │                  │ * Thời gian đào block │
+│ * Xác thực block_time │                  │ * Xác thực block_time │                  │ * Xác thực block_time │
+└───────────────────────┘                  └───────────────────────┘                  └───────────────────────┘
 ```
 
 ---
