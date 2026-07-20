@@ -83,8 +83,10 @@ pacman -S mingw-w64-x86_64-cryptopp
 
 ### Biên dịch và khởi chạy 
 ```bash
-g++ main.cpp -o main.exe -lcryptopp -lssl -lcrypto
-./main.exe
+git clone https://github.com/trgchinhh/blockchain-cpp.git
+cd blockchain-cpp
+g++ build.cpp -o .\build.exe
+.\build.exe
 ```
 ---
 
