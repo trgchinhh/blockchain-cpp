@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://github.com/trgchinhh/blockchain-cpp">
-    <img src="https://img.shields.io/badge/Language-C%2B%2B-orange.svg" alt="Language"/>
+    <img src="https://img.shields.io/badge/Language-C%2B%2B-blue.svg" alt="Language"/>
   </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License"/>
