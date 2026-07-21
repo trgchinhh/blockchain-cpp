@@ -31,6 +31,9 @@
 // Thư viện phụ dùng chrono sinh ngày tháng năm 
 #include "datetime.h"
 
+// Thư viện phụ dùng random sinh ngẫu nhiên giao dịch 
+#include "random.h"
+
 // Thư viện Crypto++ cho RSA
 // Cài từ Ming64
 // Lệnh cài: pacman -S mingw-w64-x86_64-cryptopp
@@ -48,8 +51,10 @@
 namespace fs = std::filesystem;
 using namespace std;
 using namespace dt;
+using namespace random;
 using namespace hashlib;
 using namespace chrono;
+using namespace this_thread;
 using namespace CryptoPP;
 using namespace indicators;
 using namespace indicators::option;
