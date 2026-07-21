@@ -28,15 +28,15 @@ void UserBlockchain::check_and_initialize_keys() {
         need_regenerate = true;
     } else {
         try {
-            json pub_json, priv_json;
-            publickeys_check >> pub_json;
-            privatekeys_check >> priv_json;
+            json public_json, private_json;
+            publickeys_check >> public_json;
+            privatekeys_check >> private_json;
             for (const string& name : names) {
-                if (!pub_json.contains(name) || !pub_json[name].contains("public_key")) {
+                if (!public_json.contains(name) || !public_json[name].contains("public_key")) {
                     need_regenerate = true;
                     break;
                 }
-                if (!priv_json.contains(name) || !priv_json[name].contains("private_key")) {
+                if (!private_json.contains(name) || !private_json[name].contains("private_key")) {
                     need_regenerate = true;
                     break;
                 }
