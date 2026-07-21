@@ -14,6 +14,8 @@
 
 #include <openssl/evp.h>
 #include <openssl/hmac.h>
+#include <openssl/sha.h>
+#include <openssl/md5.h>
 #include <string>
 #include <vector>
 #include <sstream>
