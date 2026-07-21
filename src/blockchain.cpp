@@ -12,7 +12,7 @@ void Blockchain::genesis_block() {
     genesis_data["time"] = time_now();
     Block genesis_block(genesis_data);
     genesis_block.block_time = time_now();
-    genesis_block.block_prev_hash = string(64, '0');
+    genesis_block.block_prev_hash = string(2 * SHA256_DIGEST_LENGTH, '0');
     genesis_block.block_curr_hash = genesis_block.hash_sha256();
     genesis_block.isvalid = true;
     this->chain.push_back(genesis_block);
@@ -26,14 +26,14 @@ void Blockchain::add_block(json data) {
     block.block_time = time_now();
     block.block_prev_hash = prev_block.block_curr_hash;
     block.block_curr_hash = block.hash_sha256();
-    auto start_time = high_resolution_clock::now();
+    datetime start_time = datetime::now();
     while(block.block_curr_hash.substr(0, this->difficulty) != this->str_difficulty) {
         block.block_nonce++;
         cout << "\rNonce: " << block.block_nonce;
         block.block_curr_hash = block.hash_sha256();            
     }    
-    auto end_time = high_resolution_clock::now();
-    block.mining_time = duration_cast<seconds>((end_time - start_time)).count();
+    datetime endtime = datetime::now();
+    block.mining_time = (endtime - start_time).total_seconds();
     this->total_time += block.mining_time;
     cout << endl;
     block.isvalid = this->isvalid_block(block, prev_block);
