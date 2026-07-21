@@ -42,7 +42,7 @@ string RSAHelper::sign_message(const string& message, const string& private_key_
     privateKey.BERDecode(privSource);
 
     AutoSeededRandomPool rng;
-    RSASS<PKCS1v15, SHA256>::Signer signer(privateKey);
+    RSASS<PKCS1v15, CryptoPP::SHA256>::Signer signer(privateKey);
     
     string signature;
     StringSource(message, true, 
@@ -59,7 +59,7 @@ bool RSAHelper::verify_signature(const string& message, const string& hex_signat
         StringSource pubSource(public_key_b64, true, new Base64Decoder);
         publicKey.BERDecode(pubSource);
 
-        RSASS<PKCS1v15, SHA256>::Verifier verifier(publicKey);
+        RSASS<PKCS1v15, CryptoPP::SHA256>::Verifier verifier(publicKey);
         
         string binary_signature;
         StringSource(hex_signature, true, new HexDecoder(new StringSink(binary_signature)));
