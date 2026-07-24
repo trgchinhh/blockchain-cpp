@@ -1,4 +1,4 @@
-#include "lib/rsa.hpp"
+#include "lib/rsa.h"
 
 void RSAHelper::generate_and_save_keys(const vector<string>& user_names, 
                                        const string& pub_filename, 
