@@ -1,4 +1,4 @@
-#include "lib//header.hpp"
-#include "lib//user_blockchain.hpp"
-#include "lib//transaction_manager.hpp"
-#include "lib//blockchain.hpp"
+#include "lib//header.h"
+#include "lib//user_blockchain.h"
+#include "lib//transaction_manager.h"
+#include "lib//blockchain.h"
