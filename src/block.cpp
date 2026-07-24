@@ -1,4 +1,4 @@
-#include "lib//block.hpp"
+#include "lib//block.h"
 
 Block::Block(json data) {
     this->block_data = data;
