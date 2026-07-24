@@ -1,4 +1,4 @@
-#include "lib//user_blockchain.hpp"
+#include "lib//user_blockchain.h"
 
 void UserBlockchain::save_all_user_keys() {
     RSAHelper::generate_and_save_keys(names, path_publickeys, path_privatekeys);
