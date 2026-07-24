@@ -1,10 +1,10 @@
-#ifndef TRANSACTION_MANAGER_HPP
-#define TRANSACTION_MANAGER_HPP
+#ifndef TRANSACTION_MANAGER_H
+#define TRANSACTION_MANAGER_H
 
-#include "header.hpp"
-#include "utils.hpp"
-#include "rsa.hpp"
-#include "path.hpp"
+#include "header.h"
+#include "utils.h"
+#include "rsa.h"
+#include "path.h"
 
 class TransactionManager {
 public:
