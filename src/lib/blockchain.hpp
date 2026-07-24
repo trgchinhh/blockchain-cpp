@@ -1,9 +1,9 @@
-#ifndef BLOCKCHAIN_HPP
-#define BLOCKCHAIN_HPP
+#ifndef BLOCKCHAIN_H
+#define BLOCKCHAIN_H
 
-#include "header.hpp"
-#include "block.hpp"
-#include "utils.hpp"
+#include "header.h"
+#include "block.h"
+#include "utils.h"
 
 class Blockchain {
 private:
