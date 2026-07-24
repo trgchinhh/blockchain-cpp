@@ -1,7 +1,7 @@
-#ifndef RSA_HPP
-#define RSA_HPP
+#ifndef RSA_H
+#define RSA_H
 
-#include "header.hpp"
+#include "header.h"
 
 class RSAHelper {
 public:
