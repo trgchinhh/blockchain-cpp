@@ -1,7 +1,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include "header.hpp"
+#include "header.h"
 
 extern const vector<string> names;
 
