@@ -7,8 +7,8 @@
 // 
 // Bản quyền: MIT LICENSE 2026
 
-#ifndef HEADER_HPP
-#define HEADER_HPP
+#ifndef HEADER_H
+#define HEADER_H
 
 #include <iostream>
 #include <vector>
