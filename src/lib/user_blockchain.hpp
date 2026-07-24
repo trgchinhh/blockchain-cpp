@@ -1,10 +1,10 @@
-#ifndef USER_BLOCKCHAIN_HPP
-#define USER_BLOCKCHAIN_HPP
+#ifndef USER_BLOCKCHAIN_H
+#define USER_BLOCKCHAIN_H
 
-#include "header.hpp"
-#include "utils.hpp"
-#include "rsa.hpp"
-#include "path.hpp"
+#include "header.h"
+#include "utils.h"
+#include "rsa.h"
+#include "path.h"
 
 class UserBlockchain {
 public:
