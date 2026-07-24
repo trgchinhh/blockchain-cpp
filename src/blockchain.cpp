@@ -1,4 +1,4 @@
-#include "lib//blockchain.hpp"
+#include "lib//blockchain.h"
 
 Blockchain::Blockchain(int difficulty) {
     this->difficulty = difficulty;
